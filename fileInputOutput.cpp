@@ -18,7 +18,7 @@ int main()
 {
 	string fileName = "ConsoleApplication1.cpp";
 	string line;
-	fstream inFile;
+	fstream inFile;    //ostream for write only, istream for read only, fstream for both 
 	inFile.open(fileName.c_str());
 	if (inFile.fail())
 	{
