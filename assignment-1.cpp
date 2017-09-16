@@ -1,5 +1,5 @@
 
-//#include "stdafx.h"
+#include "stdafx.h"
 #include <iostream>
 #include<algorithm>
 #include <cmath>
@@ -21,34 +21,33 @@ using namespace std;
 Then print the traversed list after it is sorted. */
 
 int main() {
+	//write the test file
 	ofstream fin1("gift1.in");
-	ifstream fin("gift1.in");
-	ofstream fout("gift1.out");
-
 	for (int i = 0; i < 20; i++)
 		fin1 << rand()%300  << ' ';
-
 	fin1.close();
 
-	//create new list
-	//read in and create nodes (add front)
+	//create list
+	ifstream fin("gift1.in");
+	ofstream fout("gift1.out");
 	Slist* llist = new Slist();
 	Slist* sortedList = new Slist();
 	Snode* head = llist->getHead();
 	int temp = 0;
-
 	while (fin >> temp) { llist->insertFront(temp); }
 	fin.close();
 
-
+	//redirect stream to output file
 	streambuf* coutbuf = cout.rdbuf();
 	cout.rdbuf(fout.rdbuf());
 	
 	fout << "Before sort:" << endl;
 	llist->printList();
 
-
+	//sort the list to another list
+	//selectionSort_hard() is incomplete
 	llist->selectionSort_easy(sortedList);
+
 
 	fout << "After sort:" << endl;
 	sortedList->printList();
