@@ -20,19 +20,15 @@ using namespace std;
 5. Submit screen shots of execution.  You must print the traversed list before sorting.
 Then print the traversed list after it is sorted. */
 
-
-
-struct node {
-	struct node* next;
-	int value;
-};
-
-
-
 int main() {
-	ofstream fout("gift1.out");
+	ofstream fin1("gift1.in");
 	ifstream fin("gift1.in");
+	ofstream fout("gift1.out");
 
+	for (int i = 0; i < 20; i++)
+		fin1 << rand()%300  << ' ';
+
+	fin1.close();
 
 	//create new list
 	//read in and create nodes (add front)
@@ -42,6 +38,8 @@ int main() {
 	int temp = 0;
 
 	while (fin >> temp) { llist->insertFront(temp); }
+	fin.close();
+
 
 	streambuf* coutbuf = cout.rdbuf();
 	cout.rdbuf(fout.rdbuf());
@@ -56,7 +54,7 @@ int main() {
 	sortedList->printList();
 
 	cout.rdbuf(coutbuf);
-	cin.get();
+	//cin.get();
 
 	fout.close();
 	return 0;
