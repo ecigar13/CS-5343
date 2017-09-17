@@ -24,17 +24,14 @@ Snode::Snode(int num)
 	value = num;
 	next = NULL;
 }
-
 inline int Snode::getVal()
 {
 	return value;
 }
-
 inline Snode * Snode::getNext()
 {
 	return next;
 }
-
 inline void Snode::setNext(Snode * tnode)
 {
 	next = tnode;
@@ -48,6 +45,8 @@ public:
 	bool empty() const;
 	void insertFront(int num);
 	void insertFrontNode(Snode* temp);
+	void insertBack(int num);
+	Snode* resetCur();
 	Snode* getHead();
 	void printList();
 	void setHead(Snode* temp);
@@ -56,14 +55,16 @@ public:
 	int greatestVal(Snode*n);
 	Snode* greatestNode(Snode * start);
 	Snode* removeNext(Snode* before);
-	Snode* swapNode(Snode * head, Snode * beforeMin, Snode* min);
+	Snode* swapNode(Snode * beforeCur, Snode* current, Snode * beforeMin, Snode * min);
 	
 private:
 	Snode* head;
+	Snode* cur;
 };
 Slist::Slist()
 {
 	head = NULL;
+	cur = head;
 }
 Slist::~Slist()
 {
@@ -92,6 +93,22 @@ inline void Slist::insertFrontNode(Snode * temp)
 	temp->next = head;
 	head = temp;
 }
+inline void Slist::insertBack(int num)
+{
+	Snode * temp = new Snode(num);
+	if (cur == NULL) {
+		cur = temp;
+		head = temp;
+	}
+	else {
+		cur->next = temp;
+		cur = temp;
+	}
+}
+inline Snode * Slist::resetCur()
+{
+	return cur = head;
+}
 inline Snode * Slist::getHead()
 {
 	return head;
@@ -109,21 +126,26 @@ inline void Slist::setHead(Snode * temp)
 {
 	head = temp;
 }
-inline Snode * Slist::swapNode(Snode * tmp, Snode * beforeMin, Snode * min)
+inline Snode * Slist::swapNode(Snode * beforeCur, Snode* current, Snode * beforeMin, Snode * min)
 {
 
 	//create a circular list somewhere. Fix
-	if (tmp == beforeMin)
+	//if its the head node, how to switch?
+	//if it's the end node, how to switch?
+	//if it's the middle node, how to switch?
+	//if they're next to each other, just switch the node
+	
+	if (current == beforeMin)
 	{
-		tmp->next=min->next;
-		min->next=tmp;
+		current->next=min->next;
+		min->next= current;
 		return min;
 	}
 	else {
-		Snode* temp = tmp->next;
-		beforeMin->setNext(tmp);
-		tmp->setNext(min->getNext());
-		min->setNext(temp);
+		Snode* temp = current->next;
+		beforeMin->setNext(current);
+		current->next=min->next;
+		min->next=temp;
 		return min;
 	}
 }
@@ -143,48 +165,46 @@ inline void Slist::selectionSort_hard()
 	if (head == NULL)
 		return ;
 
-	Snode* temp = head;
-	Snode* temp1 = temp;
-	Snode* beforeMin = temp;
-	Snode* min = temp;
-	int minVal = temp->value;
+	Snode* marker = head;
+	Snode* beforeMarker = NULL;
+	Snode* pointer = NULL;
+	Snode* beforeMin = NULL;
 
-	//selection sort, non-recursive
-	while(temp!=NULL){
-		cout << endl<< "pass outer" << endl;
-		Snode*s = head;
-		while (s) {
-			cout << s->value << ' ';
-			s = s->next;
-		}
-		cout << endl;
-		while (temp1->next != NULL) {
-
-			if ((temp1->getNext())->getVal() <= minVal)
-			{
-				minVal = (temp1->getNext())->getVal();
-				min = temp1->getNext();
-				beforeMin = temp1;
+	//selection sort
+	for (marker = head; marker != NULL && marker->next != NULL;) {
+		Snode* min = marker;
+		for (pointer = marker; pointer->next != NULL; pointer = pointer->next) {
+			if (pointer->next->value < min->value) {
+				min = pointer->next;
+				beforeMin = pointer;
 			}
-			temp1 = temp1->getNext();
-
 		}
+		Snode* temp = marker;
+		marker = marker->next;
 
-		if (min != temp)
-			temp = swapNode(temp, beforeMin, min);
-
-		temp = temp->next;
-		temp1 = temp;
-
-		/*Snode* s = head;
-		while (s != NULL)
-		{
-			cout << s->value << ' ';
-			cout << endl;
-		}*/
+		if (min != temp) {
+			if (min == marker) {
+				temp->next = min->next;
+				min->next = temp;
+			}
+			else {
+				beforeMin->next = temp;
+				temp->next = min->next;
+				min->next = marker;
+			}
+			if (beforeMarker != NULL)
+				beforeMarker->next = min;
+			if (head == temp)
+				head = min;
+			beforeMarker = min;
+			this->printList();
+		}
 	}
-
-	
+	/*problem: if min is a head, swap occur, but head is omitted and algo skip it
+	if min is a head,  sometime head.next is omitted
+	if min is duplicate, and duplicate is head, head is omitted
+	after swap, sometime head is omitted. But the list is ok
+	*/
 }
 inline Snode * Slist::greatestNode(Snode* start)
 {
@@ -238,7 +258,7 @@ inline void Slist::selectionSort_easy(Slist * sortedList)
 		maxNode->next = NULL;
 		//insert node to other list
 		sortedList->insertFrontNode(maxNode);
-
+		sortedList->printList();
 	}
 }
 
