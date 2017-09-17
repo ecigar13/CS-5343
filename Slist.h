@@ -169,7 +169,6 @@ inline void Slist::selectionSort_hard()
 	Snode* beforeMarker = NULL;
 	Snode* pointer = NULL;
 	Snode* beforeMin = NULL;
-
 	//selection sort
 	for (marker = head; marker != NULL && marker->next != NULL;) {
 		Snode* min = marker;
@@ -182,28 +181,44 @@ inline void Slist::selectionSort_hard()
 		Snode* temp = marker;
 		marker = marker->next;
 
+		/*if (min == tempHead)
+		{
+			marker = marker->next;
+			this->printList();
+
+			continue;
+		}*/
+
 		if (min != temp) {
-			if (min == marker) {
+			if (min == marker) {                     //if it's next to tempHead
 				temp->next = min->next;
 				min->next = temp;
 			}
 			else {
-				beforeMin->next = temp;
+				beforeMin->next = temp;          //if not next to tempHead
 				temp->next = min->next;
 				min->next = marker;
 			}
-			if (beforeMarker != NULL)
+			if (beforeMarker != NULL)               //if initinal
 				beforeMarker->next = min;
 			if (head == temp)
 				head = min;
-			beforeMarker = min;
-			this->printList();
 		}
+		beforeMarker = min;
+		this->printList();
+		/*cout << "marker " << marker->value << endl;
+		cout << "beforeMarker " << beforeMarker->value << endl;
+		cout << "pointer " << pointer->value << endl;
+		cout << "beforeMin " << beforeMin->value << endl;*/
+
+
 	}
 	/*problem: if min is a head, swap occur, but head is omitted and algo skip it
 	if min is a head,  sometime head.next is omitted
 	if min is duplicate, and duplicate is head, head is omitted
 	after swap, sometime head is omitted. But the list is ok
+
+	if the tail.next of sorted list is sorted, it will skip over, but something keeps swapping it in next run.
 	*/
 }
 inline Snode * Slist::greatestNode(Snode* start)
