@@ -1,13 +1,10 @@
-
 #include "stdafx.h"
 #include <iostream>
 #include<algorithm>
 #include <cmath>
-#include <random>
 #include <string>
 #include <fstream>
 #include <map>
-
 #include "Slist.h"
 
 using namespace std;
@@ -23,8 +20,8 @@ Then print the traversed list after it is sorted. */
 int main() {
 	//write the test file
 	ofstream fin1("gift1.in");
-	for (int i = 0; i < 20; i++)
-		fin1 << rand()%300  << ' ';
+	for (int i = 0; i <20; i++)
+		fin1 << rand()%130  << ' ';
 	fin1.close();
 
 	//create list
@@ -34,7 +31,7 @@ int main() {
 	Slist* sortedList = new Slist();
 	Snode* head = llist->getHead();
 	int temp = 0;
-	while (fin >> temp) { llist->insertFront(temp); }
+	while (fin >> temp) { llist->insertBack(temp); }
 	fin.close();
 
 	//redirect stream to output file
@@ -46,11 +43,15 @@ int main() {
 
 	//sort the list to another list
 	//selectionSort_hard() is incomplete
-	llist->selectionSort_easy(sortedList);
+
+	fout << "Sorting: \n";
+	//llist->selectionSort_easy(sortedList);
+	llist->selectionSort_hard();
 
 
 	fout << "After sort:" << endl;
-	sortedList->printList();
+	//sortedList->printList();
+	llist->printList();
 
 	cout.rdbuf(coutbuf);
 	//cin.get();
