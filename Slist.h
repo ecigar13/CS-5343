@@ -1,5 +1,9 @@
 #pragma once
 
+/*This is the implementation of a singly linked list and sorting it. One sort function implements selection sort. 
+One soft function implements modified selection sort (just add to another linked list). It is easier but 
+it is not selection sort and cannot be implemented in an array. */
+
 using namespace std;
 
 class Snode {
