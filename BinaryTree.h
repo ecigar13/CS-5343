@@ -19,13 +19,13 @@ public:
 	TreeNode* getRight();
 	TreeNode* getParent();
 	bool isRoot();
-	bool isExternal();
+
 };
 
 class BinaryTree {
 private:
 	TreeNode* root;
-	int size=0;
+	int size = 0;
 public:
 	BinaryTree(TreeNode* r);
 	TreeNode* returnRoot();
@@ -37,14 +37,19 @@ public:
 	void inorder(TreeNode* r);
 	TreeNode* predecessor(TreeNode*n, int key);
 	TreeNode* successor(TreeNode* n, int key);
+	TreeNode* predecessorNode(TreeNode*n);
+	TreeNode* successorNode(TreeNode*n);
 	TreeNode* min(TreeNode*n);
 	TreeNode* max(TreeNode*n);
 	TreeNode* sibling(TreeNode* r, int key);
 	TreeNode* parent(TreeNode* r, int key);
 	TreeNode* parentNormalTree(TreeNode* r, int key);
-	TreeNode* insertLeaf(TreeNode* r, TreeNode* n);  //duplicate inserts right
+	TreeNode* insertLeaf(TreeNode* r, TreeNode* n);
+	bool isExternal(TreeNode * n);
+	//duplicate inserts right
 	void print2DUtil(TreeNode *r, int space);
-	TreeNode* deleteNode(TreeNode* r, TreeNode* n);
+	TreeNode* deleteNode(TreeNode* r, int n);
+	TreeNode* deleteNode(TreeNode*n);
 };
 
 inline BinaryTree::BinaryTree(TreeNode* r)
@@ -103,7 +108,7 @@ inline void BinaryTree::inorder(TreeNode * r)
 	preorder(r->left);
 	cout << r->data << ' ';
 	preorder(r->right);
-	
+
 }
 inline TreeNode * BinaryTree::predecessor(TreeNode * n, int key)
 {
@@ -126,10 +131,18 @@ inline TreeNode * BinaryTree::successor(TreeNode * n, int key)
 	}
 	if (n == NULL) return NULL;
 	if (n->data == key && n->left == NULL) return NULL;
-	n = n->left;
-	while (n->right != NULL) n = n->right;
+	n = n->right;
+	while (n->left != NULL) n = n->left;
 	return n;
 
+}
+inline TreeNode * BinaryTree::predecessorNode(TreeNode * n)
+{
+	return min(n->right);
+}
+inline TreeNode * BinaryTree::successorNode(TreeNode * n)
+{
+	return max(n->left);
 }
 inline TreeNode * BinaryTree::min(TreeNode * n)
 {
@@ -144,7 +157,8 @@ inline TreeNode * BinaryTree::max(TreeNode * n)
 	return max(n->right);
 }
 inline TreeNode * BinaryTree::sibling(TreeNode * r, int key)
-{	if (r==NULL || r->data==key)
+{
+	if (r == NULL || r->data == key)
 		return NULL;
 	TreeNode* tmp = NULL;
 	if (r->left != NULL) {
@@ -161,7 +175,7 @@ inline TreeNode * BinaryTree::sibling(TreeNode * r, int key)
 }
 inline TreeNode * BinaryTree::parent(TreeNode * root, int key)
 {
-	if(root==NULL)	return NULL;
+	if (root == NULL)	return NULL;
 	if (root->data > key) {
 		if (root->left->data == key)
 			return root;
@@ -175,9 +189,9 @@ inline TreeNode * BinaryTree::parent(TreeNode * root, int key)
 }
 inline TreeNode * BinaryTree::parentNormalTree(TreeNode * root, int key)
 {
-	if(root==NULL)
-	return NULL;
-	if (root->left->data == key || root->right->data==key)
+	if (root == NULL)
+		return NULL;
+	if (root->left->data == key || root->right->data == key)
 		return root;
 	else {
 		TreeNode* tmp = parentNormalTree(root->left, key);
@@ -241,11 +255,11 @@ inline TreeNode * TreeNode::getParent()
 
 inline bool TreeNode::isRoot()
 {
-	return (parent==false);
+	return (parent == false);
 }
-inline bool TreeNode::isExternal()
+inline bool BinaryTree::isExternal(TreeNode*n)
 {
-	return (left==NULL && right==NULL);
+	return (n->getLeft() == NULL && n->getRight() == NULL);
 }
 
 
@@ -265,13 +279,13 @@ void BinaryTree::print2DUtil(TreeNode *r, int space)
 	// count
 	//cout << endl;
 	for (int i = 10; i < space; i++)
-		cout<<' ';
-	cout<< r->data<<endl;
+		cout << ' ';
+	cout << r->data << endl;
 
 	// Process left child
 	print2DUtil(r->left, space);
 }
-TreeNode* BinaryTree::deleteNode(TreeNode * r, TreeNode * n)
+TreeNode* BinaryTree::deleteNode(TreeNode * r, int n)
 {
 	//root==NULL
 	//if it's a leaf, delete
@@ -279,10 +293,30 @@ TreeNode* BinaryTree::deleteNode(TreeNode * r, TreeNode * n)
 	//if it has 2 children, bring successor up, delete successor leaf node
 
 	if (r == NULL)
-		return false;
-	if (n->left == NULL && n->right == NULL)
-		delete n;
-	if (n->left == NULL) {
-		n->parent->
+		return r;
+	if (n < r->data)
+		r->left = deleteNode(r->left, n);
+	else if (n > r->data)
+		r->right = deleteNode(r->right, n);
+	else {
+		if (r->left == NULL) {
+			TreeNode* temp = r->right;
+			delete r;
+			return temp;
+		}
+		else if (r->right == NULL) {
+			TreeNode* temp = r->left;
+			delete r;
+			return temp;
+		}
+		TreeNode* temp = successorNode(r);
+		temp->parent->left = NULL;
+		return temp;
 	}
 }
+
+inline TreeNode * BinaryTree::deleteNode(TreeNode * n)
+{
+	return NULL;
+}
+
