@@ -8,7 +8,9 @@ private:
 	TreeNode * left;
 	TreeNode* right;
 	TreeNode* parent;
+	int height;
 	friend class BinaryTree;
+	friend class AvlTree;
 public:
 	TreeNode();
 	TreeNode(int val);
@@ -25,7 +27,7 @@ public:
 class BinaryTree {
 private:
 	TreeNode* root;
-	int size = 0;
+	int size;
 public:
 	BinaryTree(TreeNode* r);
 	TreeNode* returnRoot();
@@ -40,22 +42,24 @@ public:
 	TreeNode* predecessorNode(TreeNode*n);
 	TreeNode* successorNode(TreeNode*n);
 	TreeNode* min(TreeNode*n);
-	TreeNode* max(TreeNode*n);
+	TreeNode* maxNode(TreeNode*n);
 	TreeNode* sibling(TreeNode* r, int key);
 	TreeNode* parent(TreeNode* r, int key);
 	TreeNode* parentNormalTree(TreeNode* r, int key);
 	TreeNode* insertLeaf(TreeNode* r, TreeNode* n);
 	bool isExternal(TreeNode * n);
 	//duplicate inserts right
-	void print2DUtil(TreeNode *r, int space);
+	void printTree(TreeNode *r, int space);
 	TreeNode* deleteNode(TreeNode* r, int n);
-	TreeNode* deleteNode(TreeNode*n);
+
+	friend class AvlTree;
 };
 
 inline BinaryTree::BinaryTree(TreeNode* r)
+	:root(r), size(1)
 {
 	root = r;
-	size++;
+	size=1;
 }
 inline TreeNode * BinaryTree::returnRoot()
 {
@@ -75,14 +79,14 @@ inline int BinaryTree::countLeaf(TreeNode * r)
 }
 inline int BinaryTree::largestValue(TreeNode * root)
 {/*if(root->left==NULL && root->right==NULL)
-	return root->data;
-if(root->left==NULL){
-	return(max(root->data, largestValue(root->right)));
-	}
-if (root->right == NULL) {
-	return (max(root->data, largestValue(root->left)));
-	}
-return max(root->data, largestValue(root->left), largestValue(root->right));*/
+ return root->data;
+ if(root->left==NULL){
+ return(max(root->data, largestValue(root->right)));
+ }
+ if (root->right == NULL) {
+ return (max(root->data, largestValue(root->left)));
+ }
+ return max(root->data, largestValue(root->left), largestValue(root->right));*/
 }
 inline void BinaryTree::preorder(TreeNode*r)
 {
@@ -97,17 +101,17 @@ inline void BinaryTree::postorder(TreeNode * r)
 {
 	if (r == NULL)
 		return;
-	preorder(r->left);
-	preorder(r->right);
+	postorder(r->left);
+	postorder(r->right);
 	cout << r->data << ' ';
 }
 inline void BinaryTree::inorder(TreeNode * r)
 {
 	if (r == NULL)
 		return;
-	preorder(r->left);
+	inorder(r->left);
 	cout << r->data << ' ';
-	preorder(r->right);
+	inorder(r->right);
 
 }
 inline TreeNode * BinaryTree::predecessor(TreeNode * n, int key)
@@ -138,23 +142,23 @@ inline TreeNode * BinaryTree::successor(TreeNode * n, int key)
 }
 inline TreeNode * BinaryTree::predecessorNode(TreeNode * n)
 {
-	return min(n->right);
+	return maxNode(n->left);
 }
 inline TreeNode * BinaryTree::successorNode(TreeNode * n)
 {
-	return max(n->left);
+	return min(n->right);
 }
 inline TreeNode * BinaryTree::min(TreeNode * n)
 {
-	if (n == NULL)
-		return NULL;
+	if (n->left == NULL)
+		return n;
 	return min(n->left);
 }
-inline TreeNode * BinaryTree::max(TreeNode * n)
+inline TreeNode * BinaryTree::maxNode(TreeNode * n)
 {
-	if (n == NULL)
-		return NULL;
-	return max(n->right);
+	if (n->right == NULL)
+		return n;
+	return maxNode(n->right);
 }
 inline TreeNode * BinaryTree::sibling(TreeNode * r, int key)
 {
@@ -263,27 +267,17 @@ inline bool BinaryTree::isExternal(TreeNode*n)
 }
 
 
-void BinaryTree::print2DUtil(TreeNode *r, int space)
+void BinaryTree::printTree(TreeNode *r, int space)
 {
-	// Base case
+	//reverse preorder traversal, including spaces
 	if (r == NULL)
 		return;
-
-	// Increase distance between levels
-	space += 10;
-
-	// Process right child first
-	print2DUtil(r->right, space);
-
-	// Print current node after space
-	// count
-	//cout << endl;
-	for (int i = 10; i < space; i++)
-		cout << ' ';
+	space += 3;
+	printTree(r->right, space);
+	for (int i = 5; i < space; i++)
+		cout << '-';
 	cout << r->data << endl;
-
-	// Process left child
-	print2DUtil(r->left, space);
+	printTree(r->left, space);
 }
 TreeNode* BinaryTree::deleteNode(TreeNode * r, int n)
 {
@@ -310,13 +304,11 @@ TreeNode* BinaryTree::deleteNode(TreeNode * r, int n)
 			return temp;
 		}
 		TreeNode* temp = successorNode(r);
-		temp->parent->left = NULL;
-		return temp;
+		r->data = temp->data;
+		r->right = deleteNode(r->right, temp->data);
 	}
+	return r;
+
 }
 
-inline TreeNode * BinaryTree::deleteNode(TreeNode * n)
-{
-	return NULL;
-}
 
