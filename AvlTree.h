@@ -30,8 +30,11 @@ public:
 TreeNode * AvlTree::insertLeaf(TreeNode* r, TreeNode * n)
 {
 	TreeNode* temp = BinaryTree::insertLeaf(this->root, n);
+	cout << "Before balancing: ";
+	this->preorder(this->returnRoot());
+	cout << endl;
+
 	temp = find_imbalance(n);
-	this->printTree(this->returnRoot(), 2);
 
 	if (temp != NULL) {
 		cout << "Imbalance node: " << temp->data << endl;
@@ -45,8 +48,9 @@ TreeNode * AvlTree::insertLeaf(TreeNode* r, TreeNode * n)
 			temp = rebalance(temp);
 			p->right = temp;
 		}
-		cout << "After balance: " << endl;
-		this->printTree(this->returnRoot(), 2);
+		cout << "After balancing: " << endl;
+		//this->printTree(this->returnRoot(), 2);
+		this->preorder(this->returnRoot());
 
 	}
 	else {
