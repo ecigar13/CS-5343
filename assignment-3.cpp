@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 #include <iostream>
 #include<algorithm>
 #include <fstream>
@@ -6,7 +6,7 @@
 #include <string>
 
 //#include "BinaryTree.h"
-#include "Slist.h"
+//#include "Slist.h"
 #include "AvlTree.h"
 using namespace std;
 
@@ -22,11 +22,15 @@ int main() {
 	fin >> temp;
 	TreeNode* n = new TreeNode(temp);
 	AvlTree* t = new AvlTree(n);
+	t->preorder(t->returnRoot());
 
 	while (fin >> temp) {
 		n = new TreeNode(temp);
+
 		cout << endl << "Insert: " << temp << endl;
 		t->insertLeaf(t->returnRoot(), n);
+
+		cout << endl;
 	}
 	cout << "Preorder traversal: ";
 	t->preorder(t->returnRoot());
