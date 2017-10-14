@@ -29,6 +29,7 @@ private:
 	TreeNode* root;
 	int size;
 public:
+	BinaryTree() { size = 0; root = NULL; };
 	BinaryTree(TreeNode* r);
 	TreeNode* returnRoot();
 	int countNodes(TreeNode* r);
@@ -179,6 +180,7 @@ inline TreeNode * BinaryTree::sibling(TreeNode * r, int key)
 }
 inline TreeNode * BinaryTree::parent(TreeNode * root, int key)
 {
+	//only works in BST
 	if (root == NULL)	return NULL;
 	if (root->data > key) {
 		if (root->left->data == key)
