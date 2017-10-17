@@ -1,9 +1,5 @@
 #pragma once
 
-/*This is the implementation of a singly linked list and sorting it. One sort function implements selection sort. 
-One soft function implements modified selection sort (just add to another linked list). It is easier but 
-it is not selection sort and cannot be implemented in an array. */
-
 using namespace std;
 
 class Snode {
@@ -20,7 +16,6 @@ private:
 };
 Snode::Snode()
 {
-	value = NULL;
 	next = NULL;
 }
 Snode::Snode(int num)
@@ -59,7 +54,7 @@ public:
 	int greatestVal(Snode*n);
 	Snode* greatestNode(Snode * start);
 	Snode* removeNext(Snode* before);
-	Snode* swapNode(Snode * beforeCur, Snode* current, Snode * beforeMin, Snode * min);
+	Snode* swapNode(Snode* current, Snode * beforeMin, Snode * min); //doesn't work
 	
 private:
 	Snode* head;
@@ -130,7 +125,7 @@ inline void Slist::setHead(Snode * temp)
 {
 	head = temp;
 }
-inline Snode * Slist::swapNode(Snode * beforeCur, Snode* current, Snode * beforeMin, Snode * min)
+inline Snode * Slist::swapNode(Snode* current, Snode * beforeMin, Snode * min)
 {
 
 	//create a circular list somewhere. Fix
@@ -163,7 +158,6 @@ inline int Slist::greatestVal(Snode * n)
 		else return n->value;
 	}
 }
-
 inline void Slist::selectionSort_hard()
 {
 	if (head == NULL)
@@ -185,14 +179,8 @@ inline void Slist::selectionSort_hard()
 		Snode* temp = marker;
 		marker = marker->next;
 
-		/*if (min == tempHead)
-		{
-			marker = marker->next;
-			this->printList();
-
-			continue;
-		}*/
-
+		//if min is temp (current head) then beforeMarker=min. Don't swap.
+		//otherwise, swap
 		if (min != temp) {
 			if (min == marker) {                     //if it's next to tempHead
 				temp->next = min->next;
@@ -203,9 +191,9 @@ inline void Slist::selectionSort_hard()
 				temp->next = min->next;
 				min->next = marker;
 			}
-			if (beforeMarker != NULL)               //if initinal
+			if (beforeMarker != NULL)               //don't swap if it's first time swap
 				beforeMarker->next = min;
-			if (head == temp)
+			if (head == temp)						//first time swap
 				head = min;
 		}
 		beforeMarker = min;
@@ -280,7 +268,6 @@ inline void Slist::selectionSort_easy(Slist * sortedList)
 		sortedList->printList();
 	}
 }
-
 inline Snode* Slist::removeNext(Snode * before)
 {
 	Snode*temp = before->next;

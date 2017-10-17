@@ -9,6 +9,7 @@ private:
 	TreeNode* right;
 	TreeNode* parent;
 	int height;
+	bool isBlack;
 	friend class BinaryTree;
 	friend class AvlTree;
 public:
@@ -21,7 +22,9 @@ public:
 	TreeNode* getRight();
 	TreeNode* getParent();
 	bool isRoot();
-
+	void setColor(bool black);
+	bool getColor(TreeNode* n);
+	
 };
 
 class BinaryTree {
@@ -54,6 +57,7 @@ public:
 	TreeNode* deleteNode(TreeNode* r, int n);
 
 	friend class AvlTree;
+	friend class RedBlackTree;
 };
 
 inline BinaryTree::BinaryTree(TreeNode* r)
@@ -263,6 +267,14 @@ inline bool TreeNode::isRoot()
 {
 	return (parent == false);
 }
+inline void TreeNode::setColor(bool black)
+{
+	isBlack = black;
+}
+inline bool TreeNode::getColor(TreeNode * n)
+{
+	return n->isBlack;
+}
 inline bool BinaryTree::isExternal(TreeNode*n)
 {
 	return (n->getLeft() == NULL && n->getRight() == NULL);
@@ -278,7 +290,7 @@ void BinaryTree::printTree(TreeNode *r, int space)
 	printTree(r->right, space);
 	for (int i = 5; i < space; i++)
 		cout << '-';
-	cout << r->data << endl;
+	cout << r->data<<','<<r->isBlack << endl;
 	printTree(r->left, space);
 }
 TreeNode* BinaryTree::deleteNode(TreeNode * r, int n)
