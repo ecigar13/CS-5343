@@ -14,36 +14,41 @@ using namespace std;
 //run the program on two graphs.A strongly connected graph and also a graph not strongly connected.Submit screen shot of execution for both the graphs.Also submit scanned copies of the graph.
 
 
-class mGraph {
+class Mgraph {
 private:
 	int nodes;
 	vector<vector<int>> m;
 public:
-
-	mGraph(vector<vector<int>> & m);
-	mGraph(int nodes);
+	Mgraph();
+	Mgraph(vector<vector<int>> & m);
+	Mgraph(int nodes);
 	void printMatrix();
 };
 
 
-mGraph::mGraph(vector<vector<int>> &am)
+inline Mgraph::Mgraph()
+{
+}
+
+Mgraph::Mgraph(vector<vector<int>> &am)
 {
 	m = am;
 	nodes = m[0].size();
 }
 
-inline mGraph::mGraph(int n)
+inline Mgraph::Mgraph(int n)
 {
 	m.resize(n, vector<int>(n, 0));
 	nodes = n;
 }
 
-inline void mGraph::printMatrix()
+inline void Mgraph::printMatrix()
 {
-	for (int i = 0; i < nodes; i++) {
+	for (int i = 0; i < nodes; i++) 
 		for (int j = 0; j < nodes; j++)
 			cout << m[i][j] << "\t";
 		cout << "\n";
 }
-}
+
+
 
