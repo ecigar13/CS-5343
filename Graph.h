@@ -1,6 +1,5 @@
 #pragma once
 
-#include "BinaryTree.h"
 #include <queue>
 #include<vector>
 #include <iostream>
@@ -16,13 +15,18 @@ using namespace std;
 
 class Mgraph {
 private:
-	int nodes;
+	int vertex;
 	vector<vector<int>> m;
 public:
 	Mgraph();
 	Mgraph(vector<vector<int>> & m);
-	Mgraph(int nodes);
+	Mgraph(int v);
 	void printMatrix();
+	void transposeMatrix();
+	void dfs(int v);
+	void bfs(int v);
+	void notVisited();
+	void strongConnectivity();
 };
 
 
@@ -30,25 +34,73 @@ inline Mgraph::Mgraph()
 {
 }
 
+Mgraph::Mgraph(int v) {
+	vertex = v;
+	m.resize(v, vector<int>(v));
+}
 Mgraph::Mgraph(vector<vector<int>> &am)
 {
 	m = am;
-	nodes = m[0].size();
-}
-
-inline Mgraph::Mgraph(int n)
-{
-	m.resize(n, vector<int>(n, 0));
-	nodes = n;
+	vertex = m[0].size();
 }
 
 inline void Mgraph::printMatrix()
 {
-	for (int i = 0; i < nodes; i++) 
-		for (int j = 0; j < nodes; j++)
-			cout << m[i][j] << "\t";
-		cout << "\n";
+	cout << "Vertices: " << vertex << endl;
+	for (auto row : m) {
+		for (auto col : row)
+		{
+			cout << col << ' ';
+		}
+		cout << endl;
+	}
 }
 
+inline void Mgraph::transposeMatrix() {
+	for (int i = 0; i < vertex; i++)
+		for (int j = 0; j < vertex; j++) {
+			int temp = m[i][j];
+			m[i][j] = m[j][i];
+			m[j][i] = temp;
+		}
+}
 
+inline void Mgraph::dfs(int v)
+{
+}
+
+inline void Mgraph::bfs(int start)
+{
+	queue<int> v;
+	vector<bool> visited(vertex, false);
+
+	for (int i = 0; i < vertex; i++) {
+		v.push(i);
+		visited[i] = true;
+		for (int j = 0; j < vertex; j++) {
+			if (m[i][j] != 0 && visited[j] == false)
+			{
+				v.push(j);
+				visited[j] = true;
+			}
+		}
+		cout << v.front() << ' ';
+		v.pop();
+
+	}
+
+	/*for (auto i : visited) {
+		if (i == false)
+			cout << "No" << endl;
+	}*/
+
+}
+
+inline void Mgraph::notVisited()
+{
+}
+
+inline void Mgraph::strongConnectivity()
+{
+}
 
