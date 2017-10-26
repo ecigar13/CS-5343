@@ -69,14 +69,31 @@ inline void Mgraph::dfs(int v)
 {
 }
 
+void bfs_all(){
+	//Assign unvisited to false for every vertex
+	vector<bool> visited(vertex, false);
+	for(unsigned int i = 0; i < vertex && unvisited[i]; i++){
+		bfs(i);
+	}
+}
+
 inline void Mgraph::bfs(int start)
 {
 	queue<int> v;
-	vector<bool> visited(vertex, false);
-
+	//vector<bool> visited(vertex, false);
+	v.push(i);    //push the starting vertex inside the queue
+	visited[i] = true;
+//while queue is ! empty
+	while(!v.empty()){
+		int u = q.pop_front();
+		for(/*all unvisited neighbors of u, v*/){
+			//visit(v);
+			//add v to queue
+		}
+	}
+	
 	for (int i = 0; i < vertex; i++) {
-		v.push(i);
-		visited[i] = true;
+		
 		for (int j = 0; j < vertex; j++) {
 			if (m[i][j] != 0 && visited[j] == false)
 			{
@@ -93,6 +110,8 @@ inline void Mgraph::bfs(int start)
 		if (i == false)
 			cout << "No" << endl;
 	}*/
+	
+	//BFS, ask prof if this needs to reach every vertex
 
 }
 
