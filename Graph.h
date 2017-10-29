@@ -3,7 +3,8 @@
 #include <queue>
 #include<vector>
 #include <iostream>
-
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 //1. Write a program to do BFS traversal of a graph.
 //You will first create a graph.Use Adjacency Matrix for graph representation.You may use a queue library to do the traversal.The graph must have at least 10 nodes and 15 edges.
@@ -24,16 +25,18 @@ public:
 	void printMatrix();
 	void transposeMatrix();
 	void dfs(int v);
+	void dfsRecursive(int n, vector<bool>& visited);
 	void bfs(int v);
-	void notVisited();
-	void strongConnectivity();
+	bool strongConnectivity(int begin);
+	void generateMatrix();
+	void resize(int v);
 };
 
 
 inline Mgraph::Mgraph()
 {
+	vertex = 0;
 }
-
 Mgraph::Mgraph(int v) {
 	vertex = v;
 	m.resize(v, vector<int>(v));
@@ -41,9 +44,8 @@ Mgraph::Mgraph(int v) {
 Mgraph::Mgraph(vector<vector<int>> &am)
 {
 	m = am;
-	vertex = m[0].size();
+	vertex = m.size();
 }
-
 inline void Mgraph::printMatrix()
 {
 	cout << "Vertices: " << vertex << endl;
@@ -55,71 +57,105 @@ inline void Mgraph::printMatrix()
 		cout << endl;
 	}
 }
-
 inline void Mgraph::transposeMatrix() {
 	for (int i = 0; i < vertex; i++)
-		for (int j = 0; j < vertex; j++) {
+		for (int j = i; j < vertex; j++) {
 			int temp = m[i][j];
 			m[i][j] = m[j][i];
 			m[j][i] = temp;
 		}
 }
-
-inline void Mgraph::dfs(int v)
+inline void Mgraph::dfs(int begin)
 {
-}
-
-void bfs_all(){
-	//Assign unvisited to false for every vertex
+	int start = begin - 1;
 	vector<bool> visited(vertex, false);
-	for(unsigned int i = 0; i < vertex && unvisited[i]; i++){
-		bfs(i);
+	dfsRecursive(start, visited);
+	//call dfsRecursive
+}
+inline void Mgraph::dfsRecursive(int start, vector<bool> & visited) {
+	visited[start] = true;
+	cout << start + 1 << ' ';
+	for (int i = 0; i < vertex; i++)
+	{
+		if (m[start][i] != 0 && visited[i] == false) {
+			dfsRecursive(i, visited);
+		}
+
 	}
 }
-
-inline void Mgraph::bfs(int start)
+inline void Mgraph::bfs(int begin)
 {
-	queue<int> v;
-	//vector<bool> visited(vertex, false);
-	v.push(i);    //push the starting vertex inside the queue
-	visited[i] = true;
-//while queue is ! empty
-	while(!v.empty()){
-		int u = q.pop_front();
-		for(/*all unvisited neighbors of u, v*/){
-			//visit(v);
-			//add v to queue
-		}
-	}
-	
-	for (int i = 0; i < vertex; i++) {
-		
+	int start = begin - 1;    //convert to array index;
+	queue<int> q;
+	vector<bool> visited(vertex, false);
+	q.push(start);    //push the starting vertex inside the queue
+	visited[start] = true;
+
+	while (!q.empty()) {
+		int u = q.front();
+		q.pop();
+
+		cout << u + 1 << ' ';
 		for (int j = 0; j < vertex; j++) {
-			if (m[i][j] != 0 && visited[j] == false)
-			{
-				v.push(j);
+			if (m[u][j] != 0 && visited[j] == false) {
+				q.push(j);
 				visited[j] = true;
 			}
 		}
-		cout << v.front() << ' ';
-		v.pop();
-
 	}
-
-	/*for (auto i : visited) {
-		if (i == false)
-			cout << "No" << endl;
-	}*/
-	
-	//BFS, ask prof if this needs to reach every vertex
-
+	cout << endl;
 }
-
-inline void Mgraph::notVisited()
+inline bool Mgraph::strongConnectivity(int begin)
 {
-}
+	//Kosaraju's algo
+	vector<bool> visited(vertex, false);
 
-inline void Mgraph::strongConnectivity()
+	cout << "DFS: ";
+	this->dfsRecursive(begin - 1, visited);
+	cout << endl;
+	for (auto row : visited)
+		if (row == false)
+			return false;
+
+	this->transposeMatrix();
+	for (int i = 0; i < vertex; i++)
+		visited[i] = false;
+	cout << "DFS: ";
+	this->dfsRecursive(begin - 1, visited);
+	cout << endl;
+
+	this->transposeMatrix();
+	for (auto row : visited)
+		if (row == false)
+		{
+			return false;
+		}
+		else return true;
+
+		//dfs traversal
+		//reverse all edges
+		//mark visited vector as unvisited
+		//dfs traversal again
+		//if every node can be reached from a vertex then it's strongly connected
+}
+inline void Mgraph::generateMatrix()
 {
-}
+	int count = 17;
+	srand(time(NULL));
+	for (int i = 0; i < vertex; i++)
+		for (int j = 0; j < vertex; j++)
+		{
+			int temp=rand() % 2;
+			if (temp != 0 && count !=0)
+			{
+				count--;
+				m[i][j] = temp;
 
+			}
+		}
+}
+inline void Mgraph::resize(int newSize)
+{
+	vertex = newSize;
+	m.resize(newSize, vector<int>(newSize));
+}
