@@ -7,51 +7,45 @@
 using namespace std;
 
 void createVector(vector<vector<int>> &temp, ifstream &fin) {
-
-	for (auto & row:temp)
-		for (auto & col:row)
+	int dist = 0;
+	for (auto vec : temp)
+		for (auto x : vec)
 		{
-			fin >> col;
-			//cout << temp[i][j];
+			fin >> dist;
+			x = dist;
 		}
-
 }
 int main() {
 	//Test case: https://www.math.ucdavis.edu/~daddel/linear_algebra_appl/Applications/GraphTheory/GraphTheory_9_17/node9.html
 
-	ifstream fin("Graph.in");
-	ofstream fout("Graph.out");
+	ifstream fin("avl.in");
+	ofstream fout("avl.out");
 
 	streambuf * coutbuf = cout.rdbuf();
 	cout.rdbuf(fout.rdbuf());
 
 	int size = 0;
 	fin >> size;
+	int dist;
 
 	vector<vector<int>> temp(size, vector<int>(size, 0));
-	createVector(temp, fin);
+	for (auto vec : temp)
+		for (auto x : vec)
+		{
+			fin >> dist;
+			x = dist;
+		}
 
+	for (auto vec : temp) {
+		for (auto x : vec)
+		{
+			cout << x;
+		}
+		cout << endl;
+	}
+	/*Mgraph* graph = new Mgraph(temp);
 
-	Mgraph* graph = new Mgraph(temp);
-	//Mgraph* graph = new Mgraph(20);
-	//graph->generateMatrix();
-
-	cout << "Print matrix: " << endl;
-	graph->printMatrix();
-
-	/*graph->transposeMatrix();
-	cout << "Print transposed matrix: " << endl;
 	graph->printMatrix();*/
-
-
-	cout << "BFS: " << endl;
-	graph->bfs(6);
-
-	bool stronglyConnected = graph->strongConnectivity(6);
-	cout << "Strongly connected: " << stronglyConnected << endl;
-
-
-
 	fout.close();
 	cout.rdbuf(coutbuf);
 
