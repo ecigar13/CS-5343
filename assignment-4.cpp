@@ -43,9 +43,9 @@ int main() {
 		}
 		cout << endl;
 	}
-	/*Mgraph* graph = new Mgraph(temp);
+	Mgraph* graph = new Mgraph(temp);
 
-	graph->printMatrix();*/
+	graph->printMatrix();
 	fout.close();
 	cout.rdbuf(coutbuf);
 
