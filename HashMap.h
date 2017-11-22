@@ -38,6 +38,7 @@ public:
 	int add(string& s);
 	int search(string& s);
 	void remove(string& s);
+	void printMap();
 	int linearProbing(int i);
 };
 
@@ -65,6 +66,7 @@ inline double HashMap::loadFactor()
 
 inline int HashMap::add(string & s)
 {
+//need to add: when load factor is > 0.5, double the size and rehash the table.
 	int key = myHash(s);
 	while (true)
 		if (h[key] == "")
@@ -73,8 +75,8 @@ inline int HashMap::add(string & s)
 			return key;
 		}
 	key++;
-	if (key >= h.size - 1)
-		key %= h.size;
+	if (key >= h.size() - 1)
+		key %= h.size();
 }
 
 inline int HashMap::search(string & s)
@@ -84,8 +86,8 @@ inline int HashMap::search(string & s)
 		if (s.compare(h[key]) == 0)
 			return key;
 	key++;
-	if (key >= h.size - 1)
-		key %= h.size;
+	if (key >= h.size() - 1)
+		key %= h.size();
 
 }
 inline void HashMap::remove(string & s)
@@ -97,9 +99,16 @@ inline void HashMap::remove(string & s)
 			return;
 		}
 		key++;
-		if (key >= h.size - 1)
-			key %= h.size;
+		if (key >= h.size() - 1)
+			key %= h.size();
 
+	}
+}
+
+inline void HashMap::printMap()
+{
+	for (int i = 0; i < h.size(); i++) {
+		cout << i << "\t\t\t" << h[i] << endl;
 	}
 }
 

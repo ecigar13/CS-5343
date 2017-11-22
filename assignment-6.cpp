@@ -39,14 +39,18 @@ int main() {
 			break;
 		v.push_back(temp);
 	}
+
+	HashMap * t = new HashMap(3);
+
 	for (auto i : v)
+	{
 		cout << i << endl;
-
-	HashMap t = new HashMap(3);
-
-
+		t->add(i);
+	}
+	
+	t->printMap();
 	fout.close();
 	cout.rdbuf(coutbuf);
 
-	cin.get();
+	//cin.get();
 }
