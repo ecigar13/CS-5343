@@ -72,7 +72,7 @@ inline TreeNode * BinaryTree::returnRoot()
 }
 inline int BinaryTree::countNodes(TreeNode* r)
 {
-	if (r = NULL)
+	if (r == NULL)
 		return 0;
 	else return 1 + countNodes(r->left) + countNodes(r->right);
 }
@@ -290,7 +290,7 @@ void BinaryTree::printTree(TreeNode *r, int space)
 	printTree(r->right, space);
 	for (int i = 5; i < space; i++)
 		cout << '-';
-	cout << r->data<<','<<r->isBlack << endl;
+	cout << r->data<< endl;
 	printTree(r->left, space);
 }
 TreeNode* BinaryTree::deleteNode(TreeNode * r, int n)
