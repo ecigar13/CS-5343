@@ -4,6 +4,7 @@
 #include <string>
 #include <functional>
 #include <utility>
+#include <assert.h>
 using namespace std;
 //You may pick a hashing algorithm to use from standard library.But you must implement the function s to add, search and delete from the hash table.
 //The collision resolution should be done using open address scheme, linear probe.
@@ -26,10 +27,10 @@ using namespace std;
 
 class HashMap {
 protected:
-	vector < string> h;
+	vector <string> h;	//buckets
 
 public:
-	HashMap(int initialSize);
+	HashMap(int least_size = 3, double _dft_LF_Rsz_Thresh = 0.5);
 	size_t myHash(string& s);
 	void doubleSize();
 	double loadFactor();
@@ -40,12 +41,24 @@ public:
 	void remove(string& s);
 	void printMap();
 	int linearProbing(int i);
+	double dft_LF_Rsz_Thresh;	//Default Load Factor Resizing Threshold
+	
+	int size_idx;
+	int prime_sizes[] = {3, 7, 17, 37, 79, 163, 331, 673, 1361, 2729, 5471};
 };
 
-inline HashMap::HashMap(int initialSize)
+inline HashMap::HashMap(int least_size = 3, double _dft_LF_Rsz_Thresh = 0.5)
 {
-	h.resize(initialSize);
+	//Sizes more than a maximum size are not supported
+	assert(least_size <= 5471);
+	
+	size_idx = 0;
+	while(prime_sizes[size_idx] < least_size) size_idx++;
+	
+	h.resize(prime_sizes[size_idx]);
 	count = 0;
+	
+	dft_LF_Rsz_Thresh = _dft_LF_Rsz_Thresh;
 }
 
 size_t HashMap::myHash(string& s) {
@@ -64,32 +77,52 @@ inline double HashMap::loadFactor()
 	return ((double)count) / h.size();
 }
 
+
 inline int HashMap::add(string & s)
-{
-//need to add: when load factor is > 0.5, double the size and rehash the table.
-	int key = myHash(s);
-	while (true)
-		if (h[key] == "")
-		{
+{	
+	//Re-hash the entire table if adding the element s will lead to a load factor above the threshold
+	if (double(count + 1) / h.size() > dft_LF_Rsz_Thresh){
+		//Rehash existing entries and copy to bucket-structure h
+		vector<string> tmp = h; // Ensure that it's a deep copy
+		h.clear();
+		
+		size_idx++;	//resize to the next available size
+		h.resize(prime_sizes[size_idx]);
+		
+		//re-add all elements from tmp back to the resized h
+		for(auto s : tmp){
+			int key = (int) myHash(s);
+			while(h[key] != ""){
+				key = (key + 1) % h.size();
+			}
 			h[key] = s;
-			return key;
 		}
-	key++;
-	if (key >= h.size() - 1)
-		key %= h.size();
+	}
+	
+	//Add the element s to the existing buckets
+	int key = (int) myHash(s);
+	while(h[key] != ""){
+		key = (key + 1) % h.size();
+	}
+	h[key] = s;
+	count++;
+	return key;
 }
 
+//Will return index of the entry if found, and -1 if not
 inline int HashMap::search(string & s)
 {
-	int key = myHash(s);
-	while (h[key] != "")
-		if (s.compare(h[key]) == 0)
-			return key;
-	key++;
-	if (key >= h.size() - 1)
-		key %= h.size();
-
+	int key = (int) myHash(s);
+	while(h[key] != ""){		//Follow linear probing
+		if (s.compare(h[key]) == 0) return key;
+		key = (key + 1) % h.size();
+	}
+	
+	error("Key not found");
+	return -1;
 }
+
+
 inline void HashMap::remove(string & s)
 {
 	int key = myHash(s);
@@ -112,7 +145,7 @@ inline void HashMap::printMap()
 	}
 }
 
-
+/*
 inline int HashMap::linearProbing(int i)
 {
 	int j = i;
@@ -124,3 +157,4 @@ inline int HashMap::linearProbing(int i)
 		else j++;
 	}
 }
+*/
