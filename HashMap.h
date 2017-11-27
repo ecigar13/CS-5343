@@ -28,104 +28,94 @@ using namespace std;
 class HashMap {
 protected:
 	vector <string> h;	//buckets
-
-public:
-	HashMap(int least_size = 3, double _dft_LF_Rsz_Thresh = 0.5);
-	size_t myHash(string& s);
-	void doubleSize();
-	double loadFactor();
+	double load;	//Default Load Factor Resizing Threshold	
+	int prime_sizes[11] = { 3, 7, 17, 37, 79, 163, 331, 673, 1361, 2729, 5471 };
 	int count;
 	int collision;
+	int size_idx;
+public:
+	HashMap(int least_size, double load);
+	size_t myHash(string& s);
+	void changeSize();
+	double loadFactor();
 	int add(string& s);
 	int search(string& s);
 	void remove(string& s);
 	void printMap();
-	int linearProbing(int i);
-	double dft_LF_Rsz_Thresh;	//Default Load Factor Resizing Threshold
-	
-	int size_idx;
-	int prime_sizes[] = {3, 7, 17, 37, 79, 163, 331, 673, 1361, 2729, 5471};
+	int getSize();
 };
 
-inline HashMap::HashMap(int least_size = 3, double _dft_LF_Rsz_Thresh = 0.5)
+inline HashMap::HashMap(int least_size, double load): load(0.5), count(0), collision(0)
 {
 	//Sizes more than a maximum size are not supported
 	assert(least_size <= 5471);
-	
-	size_idx = 0;
-	while(prime_sizes[size_idx] < least_size) size_idx++;
-	
-	h.resize(prime_sizes[size_idx]);
-	count = 0;
-	
-	dft_LF_Rsz_Thresh = _dft_LF_Rsz_Thresh;
-}
 
+	size_idx = 0;
+	while (prime_sizes[size_idx] < least_size) size_idx++;
+	h.resize(prime_sizes[size_idx]);
+	load = load;
+}
 size_t HashMap::myHash(string& s) {
 	return hash<string>{}(s) % h.size();
 }
-
-inline void HashMap::doubleSize()
+inline void HashMap::changeSize()
 {
+	vector<string> tmp = h; // Ensure that it's a deep copy
+	h.clear();
+	size_idx++;	//resize to the next available size
+	h.resize(prime_sizes[size_idx]);
 
-	if (loadFactor() > 0.5)
-		h.resize(h.size() * 2);
+	//rehash
+	for (auto s : tmp) {
+		int key = (int)myHash(s);
+		while (h[key] != "") {
+			key = (key + 1) % h.size();
+		}
+		h[key] = s;
+	}
+
 }
-
 inline double HashMap::loadFactor()
 {
 	return ((double)count) / h.size();
 }
-
-
 inline int HashMap::add(string & s)
-{	
+{
 	//Re-hash the entire table if adding the element s will lead to a load factor above the threshold
-	if (double(count + 1) / h.size() > dft_LF_Rsz_Thresh){
+	if (double(count + 1) / h.size() > load) {
 		//Rehash existing entries and copy to bucket-structure h
-		vector<string> tmp = h; // Ensure that it's a deep copy
-		h.clear();
-		
-		size_idx++;	//resize to the next available size
-		h.resize(prime_sizes[size_idx]);
-		
-		//re-add all elements from tmp back to the resized h
-		for(auto s : tmp){
-			int key = (int) myHash(s);
-			while(h[key] != ""){
-				key = (key + 1) % h.size();
-			}
-			h[key] = s;
-		}
+		this->changeSize();
 	}
-	
+
 	//Add the element s to the existing buckets
-	int key = (int) myHash(s);
-	while(h[key] != ""){
+	int key = (int)myHash(s);
+	while (h[key] != "") {
+		collision++;
 		key = (key + 1) % h.size();
 	}
+	
+	//assign the string, print collision
 	h[key] = s;
+	cout << "Collision: " << collision << endl;
+	collision = 0;
 	count++;
 	return key;
 }
-
 //Will return index of the entry if found, and -1 if not
 inline int HashMap::search(string & s)
 {
-	int key = (int) myHash(s);
-	while(h[key] != ""){		//Follow linear probing
+	int key = (int)myHash(s);
+	while (h[key] != "") {		//Follow linear probing
 		if (s.compare(h[key]) == 0) return key;
 		key = (key + 1) % h.size();
 	}
-	
-	error("Key not found");
+
+	cout << "Key not found" << endl;
 	return -1;
 }
-
-
 inline void HashMap::remove(string & s)
 {
-	int key = myHash(s);
+	int key = (int)myHash(s);
 	while (h[key] != "") {
 		if (s.compare(h[key]) == 0) {
 			h[key] = "";
@@ -134,10 +124,8 @@ inline void HashMap::remove(string & s)
 		key++;
 		if (key >= h.size() - 1)
 			key %= h.size();
-
 	}
 }
-
 inline void HashMap::printMap()
 {
 	for (int i = 0; i < h.size(); i++) {
@@ -145,16 +133,9 @@ inline void HashMap::printMap()
 	}
 }
 
-/*
-inline int HashMap::linearProbing(int i)
+inline int HashMap::getSize()
 {
-	int j = i;
-	while (true) {
-		if (j > h.size() - 1)
-			j = (j + 1) % h.size();
-		if (h[j] == "")						//might have logic error here.
-			return j;
-		else j++;
-	}
+	return int(h.size());
 }
-*/
+
+

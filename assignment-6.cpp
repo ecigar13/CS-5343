@@ -1,4 +1,4 @@
-#include "stdafx.h"
+//#include "stdafx.h"
 
 #include <iostream>
 #include <fstream>
@@ -9,24 +9,9 @@
 #include "HashMap.h"
 using namespace std;
 
-void createVector(vector<vector<int> > &temp, ifstream &fin) {
-	for (unsigned int i = 0; i < temp.size(); i++)
-		for (unsigned int j = 0; j < temp.size(); j++)
-		{
-			fin >> temp[i][j];
-			if (i != j && temp[i][j] == 0)
-				temp[i][j] = NULL;
-			if (i == j && temp[i][j] != 0)
-				temp[i][j] = 1;
-		}
-}
 int main() {
-
-
-	//use graph.in for not strongly connected. Use graph1.in for strongly connected.
 	ifstream fin("hash.in");
 	ofstream fout("hash.out");
-
 	streambuf * coutbuf = cout.rdbuf();
 	cout.rdbuf(fout.rdbuf());
 
@@ -34,23 +19,32 @@ int main() {
 	vector<string> v;
 	string temp;
 	while (true) {
-		getline(fin, temp);
-		if (fin.eof())
+		if (fin.eof())   //eof is set right after reading the last line.
 			break;
+		getline(fin, temp);
 		v.push_back(temp);
 	}
 
-	HashMap * t = new HashMap(3);
+	HashMap * t = new HashMap(3, 0.5);
 
+	cout << endl<< "Adding strings: " << endl;
 	for (auto i : v)
 	{
 		cout << i << endl;
 		t->add(i);
+		cout << "Table size: " << t->getSize() << endl;
 	}
 	
+	cout <<endl<< "Printing map: " << endl;
 	t->printMap();
+
+	int s = rand() % t->getSize();
+	cout << "Deleting: " << v[1] << endl;
+	t->remove(v[1]);
+	cout << "Searching: " << v[1] << endl;
+	cout << "Search result: " << t->search(v[1]) << endl;
 	fout.close();
 	cout.rdbuf(coutbuf);
-
+	cout << "Check hash.out file." << endl;
 	//cin.get();
 }
