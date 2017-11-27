@@ -38,11 +38,15 @@ int main() {
 	cout <<endl<< "Printing map: " << endl;
 	t->printMap();
 
-	int s = rand() % t->getSize();
-	cout << "Deleting: " << v[1] << endl;
-	t->remove(v[1]);
-	cout << "Searching: " << v[1] << endl;
-	cout << "Search result: " << t->search(v[1]) << endl;
+	int s = rand() % v.size();
+	cout << "Searching: " << v[s] << endl;
+	cout << "Search result: " << t->search(v[s]) << endl;
+
+	cout << "Deleting: " << v[s] << endl;
+	t->remove(v[s]);
+
+	cout << "Searching: " << v[s] << endl;
+	cout << "Search result: " << t->search(v[s]) << endl;
 	fout.close();
 	cout.rdbuf(coutbuf);
 	cout << "Check hash.out file." << endl;
