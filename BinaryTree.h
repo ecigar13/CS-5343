@@ -280,7 +280,11 @@ inline bool BinaryTree::isExternal(TreeNode*n)
 	return (n->getLeft() == NULL && n->getRight() == NULL);
 }
 
-
+/* This function prints graphical version of a tree. You need to supply pointer to the root of a tree
+* and spacing in the tree. I usually go with 3.
+* TreeNode *r : root of any binary tree.
+* int space : spacing in the tree. Larger number means more space. 
+*/
 void BinaryTree::printTree(TreeNode *r, int space)
 {
 	//reverse preorder traversal, including spaces
