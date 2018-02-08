@@ -18,8 +18,10 @@ void createVector(vector<vector<int>> &temp, ifstream &fin) {
 int main() {
 	//Test case: https://www.math.ucdavis.edu/~daddel/linear_algebra_appl/Applications/GraphTheory/GraphTheory_9_17/node9.html
 
-	ifstream fin("avl.in");
-	ofstream fout("avl.out");
+	//The graph.in file contains a 2D array of adjacency matrix (potentially with length). This does not work with
+	//incident matrix.
+	ifstream fin("graph.in");
+	ofstream fout("graph.out");
 
 	streambuf * coutbuf = cout.rdbuf();
 	cout.rdbuf(fout.rdbuf());
