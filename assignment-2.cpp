@@ -1,7 +1,5 @@
 /*
-ID: ecigar
-LANG: C++
-TASK: friday
+Write a program to insert numbers into a binary tree, then do an inorder traversal, preorder traversal and postorder traversal.
 */
 //#include "stdafx.h"
 #include <iostream>
@@ -14,6 +12,7 @@ int main() {
 
 	//must create unique random numbers first
 
+	//the input file contains a list of number to be inserted.
 	ofstream fout("friday.out");
 	ifstream fin("friday.in");
 
